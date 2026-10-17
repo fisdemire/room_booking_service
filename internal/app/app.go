@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -10,16 +11,30 @@ import (
 	"time"
 
 	"github.com/fisdemire/room-booking/internal/config"
+	"github.com/fisdemire/room-booking/internal/repository"
+	"github.com/fisdemire/room-booking/internal/repository/postgres"
 	"github.com/fisdemire/room-booking/internal/server"
 )
 
 type App struct {
+	repositories    *postgres.Repositories
+	txManager       *postgres.TxManager
 	server          *server.Server
 	logger          *slog.Logger
 	shutdownTimeout time.Duration
 }
 
-func New(ctx context.Context, cfg config.Config, log *slog.Logger) (*App, error) {
+func New(
+	ctx context.Context,
+	cfg config.Config,
+	log *slog.Logger,
+) (*App, error) {
+	repositories, txManager, err :=
+		repository.NewRepositoryWithTxManager(ctx, cfg.Postgres)
+	if err != nil {
+		return nil, fmt.Errorf("initialize database: %w", err)
+	}
+
 	srv := server.New(
 		cfg.HTTP.GetAddr(),
 		cfg.HTTP.ReadTimeout,
@@ -29,6 +44,8 @@ func New(ctx context.Context, cfg config.Config, log *slog.Logger) (*App, error)
 
 	return &App{
 		server:          srv,
+		repositories:    repositories,
+		txManager:       txManager,
 		logger:          log,
 		shutdownTimeout: cfg.HTTP.ShutdownTimeout,
 	}, nil
@@ -48,15 +65,14 @@ func (a *App) Run(ctx context.Context) error {
 		serverErr <- a.server.Run()
 	}()
 
+	var runErr error
+
 	select {
 	case <-ctx.Done():
 		a.logger.Info("shutdown signal received")
 
 	case err := <-serverErr:
-		if err != nil {
-			return err
-		}
-		return nil
+		runErr = err
 	}
 
 	shutdownCtx, cancel := context.WithTimeout(
@@ -65,22 +81,26 @@ func (a *App) Run(ctx context.Context) error {
 	)
 	defer cancel()
 
-	return a.Shutdown(shutdownCtx)
+	shutdownErr := a.Shutdown(shutdownCtx)
+
+	return errors.Join(runErr, shutdownErr)
 }
 
 func (a *App) Shutdown(ctx context.Context) error {
 	a.logger.Info("shutting down HTTP server")
 
 	err := a.server.Shutdown(ctx)
-	if err == nil {
-		return nil
+	if err != nil {
+		a.logger.Error(
+			"graceful shutdown failed",
+			"error",
+			err,
+		)
+
+		err = errors.Join(err, a.server.Close())
 	}
 
-	a.logger.Error("graceful shutdown failed", "error", err)
-
-	if closeErr := a.server.Close(); closeErr != nil {
-		return errors.Join(err, closeErr)
-	}
+	a.repositories.Close()
 
 	return err
 }

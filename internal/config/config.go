@@ -5,11 +5,13 @@ import (
 	"net"
 	"time"
 
+	"github.com/fisdemire/room-booking/internal/repository"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
 	HTTP      HTTPConfig
+	Postgres  repository.PostgresConfig
 	JWTSecret string        `env:"JWT_SECRET" env-required:"true"`
 	JWTTTL    time.Duration `env:"JWT_TTL" env-default:"24h"`
 }

@@ -24,6 +24,7 @@ RUN apk add --no-cache ca-certificates \
 WORKDIR /app
 
 COPY --from=builder /out/room-booking /app/room-booking
+COPY --from=builder /src/migrations /app/migrations
 
 USER app
 
