@@ -26,7 +26,7 @@ func (u *User) IsAdmin() bool {
 }
 
 func (u *User) Validate() error {
-	if u.ID == "" {
+	if u == nil {
 		return ErrInvalidUser
 	}
 

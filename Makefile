@@ -1,10 +1,13 @@
-.PHONY: up down help
+.PHONY: up down mock help
 
 up:
 	docker compose up -d --build
 
 down:
 	docker compose down
+
+mock:
+	mockery
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
