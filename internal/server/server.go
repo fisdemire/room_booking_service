@@ -21,6 +21,8 @@ func New(
 	writeTimeout time.Duration,
 	idleTimeout time.Duration,
 	users domain.UserUseCase,
+	rooms domain.RoomUseCase,
+	tokens TokenParser,
 ) *Server {
 	router := gin.New()
 	router.Use(gin.Recovery())
@@ -32,6 +34,13 @@ func New(
 	})
 
 	handler.RegisterRoutes(router, users)
+
+	roomHandler := handler.NewRoomHandler(rooms)
+	roomHandler.RegisterRoutes(
+		router,
+		AuthMiddleware(tokens),
+		RequireAdmin(),
+	)
 
 	return &Server{
 		server: &http.Server{

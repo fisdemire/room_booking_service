@@ -32,6 +32,28 @@ type TokenResponse struct {
 	Token string `json:"token"`
 }
 
+type CreateRoomRequest struct {
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description"`
+	Capacity    int    `json:"capacity"`
+}
+
+type RoomResponse struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Capacity    int       `json:"capacity"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+type CreateRoomResponse struct {
+	Room RoomResponse `json:"room"`
+}
+
+type ListRoomsResponse struct {
+	Rooms []RoomResponse `json:"rooms"`
+}
+
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
 }

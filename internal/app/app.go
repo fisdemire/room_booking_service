@@ -56,12 +56,18 @@ func New(
 		passwordHasher,
 	)
 
+	roomUseCase := usecase.NewRoomUseCase(
+		repositories.Room(),
+	)
+
 	srv := server.New(
 		cfg.HTTP.GetAddr(),
 		cfg.HTTP.ReadTimeout,
 		cfg.HTTP.WriteTimeout,
 		cfg.HTTP.IdleTimeout,
 		userUseCase,
+		roomUseCase,
+		tokenGenerator,
 	)
 
 	return &App{

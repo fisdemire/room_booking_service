@@ -124,6 +124,10 @@ func (r *Repositories) User() domain.UserRepository {
 	return NewUserRepository(r.pool, r.getter)
 }
 
+func (r *Repositories) Room() domain.RoomRepository {
+	return NewRoomRepository(r.pool, r.getter)
+}
+
 func (r *Repositories) Close() {
 	if r == nil || r.pool == nil {
 		return
