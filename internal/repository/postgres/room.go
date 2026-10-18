@@ -2,9 +2,11 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/fisdemire/room-booking/internal/domain"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -101,4 +103,34 @@ func (r *RoomRepository) GetAll(
 	}
 
 	return rooms, nil
+}
+
+func (r *RoomRepository) GetByID(
+	ctx context.Context,
+	id string,
+) (*domain.Room, error) {
+	var room domain.Room
+
+	err := r.getter(ctx).QueryRow(
+		ctx,
+		`SELECT id::text, name, description, capacity, created_at
+         FROM rooms
+         WHERE id = $1`,
+		id,
+	).Scan(
+		&room.ID,
+		&room.Name,
+		&room.Description,
+		&room.Capacity,
+		&room.CreatedAt,
+	)
+
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, domain.ErrRoomNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("get room by ID: %w", err)
+	}
+
+	return &room, nil
 }

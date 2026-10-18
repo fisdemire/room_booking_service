@@ -68,6 +68,11 @@ func New(
 		scheduleRepo,
 	)
 
+	slotUseCase := usecase.NewSlotUseCase(
+		slotRepo,
+		repositories.Room(),
+	)
+
 	scheduleUseCase := usecase.NewScheduleUseCase(
 		scheduleRepo,
 		slotGenerator,
@@ -82,6 +87,7 @@ func New(
 		userUseCase,
 		roomUseCase,
 		scheduleUseCase,
+		slotUseCase,
 		tokenGenerator,
 	)
 

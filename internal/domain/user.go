@@ -12,7 +12,6 @@ const (
 	RoleAdmin Role = "admin"
 	RoleUser  Role = "user"
 
-	// Dummy IDs are stable because bookings reference users by UUID.
 	DummyUserID  = "00000000-0000-0000-0000-000000000001"
 	DummyAdminID = "00000000-0000-0000-0000-000000000002"
 )

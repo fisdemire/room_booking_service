@@ -29,6 +29,7 @@ func (r *Room) Validate() error {
 type RoomRepository interface {
 	Create(ctx context.Context, room *Room) error
 	GetAll(ctx context.Context) ([]*Room, error)
+	GetByID(ctx context.Context, id string) (*Room, error)
 }
 
 type RoomUseCase interface {

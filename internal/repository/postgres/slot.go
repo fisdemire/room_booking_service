@@ -75,13 +75,24 @@ func (r *SlotRepository) GetAvailableByRoomAndTime(
 	end := start.AddDate(0, 0, 1)
 
 	query := `
-		SELECT id::text, room_id::text, start_time, end_time, is_available
-		FROM slots
-		WHERE room_id = $1
-			AND start_time >= $2
-			AND start_time < $3
-			AND is_available = TRUE
-		ORDER BY start_time
+		SELECT
+			s.id::text,
+			s.room_id::text,
+			s.start_time,
+			s.end_time,
+			s.is_available
+		FROM slots AS s
+		WHERE s.room_id = $1
+			AND s.start_time >= $2
+			AND s.start_time < $3
+			AND s.is_available = TRUE
+			AND NOT EXISTS (
+				SELECT 1
+				FROM bookings AS b
+				WHERE b.slot_id = s.id
+					AND b.status = 'active'
+			)
+		ORDER BY s.start_time ASC
 	`
 
 	rows, err := r.getter(ctx).Query(ctx, query, roomID, start, end)

@@ -100,12 +100,10 @@ type Repositories struct {
 	getter func(context.Context) DBTX
 }
 
-// New creates repositories that use the pool directly.
 func New(pool *pgxpool.Pool) *Repositories {
 	return NewWithGetter(pool, nil)
 }
 
-// NewWithGetter creates repositories that can use transactions stored in ctx.
 func NewWithGetter(
 	pool *pgxpool.Pool,
 	getter func(context.Context) DBTX,

@@ -80,3 +80,14 @@ type ScheduleResponse struct {
 type CreateScheduleResponse struct {
 	Schedule ScheduleResponse `json:"schedule"`
 }
+
+type SlotResponse struct {
+	ID     string    `json:"id"`
+	RoomID string    `json:"roomId"`
+	Start  time.Time `json:"start"`
+	End    time.Time `json:"end"`
+}
+
+type ListSlotsResponse struct {
+	Slots []SlotResponse `json:"slots"`
+}

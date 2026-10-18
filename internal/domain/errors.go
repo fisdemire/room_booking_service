@@ -27,4 +27,7 @@ var (
 
 	ErrBookingNotFound = errors.New("booking not found")
 	ErrForbidden       = errors.New("forbidden")
+
+	ErrRoomIDAndSlotIDRequired = errors.New("room ID and slot ID are required")
+	ErrSlotNotInRoom           = errors.New("slot does not belong to the specified room")
 )

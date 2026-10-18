@@ -11,8 +11,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// UserRepository stores and loads users from PostgreSQL. The getter chooses
-// the transaction from the context when one exists, otherwise it returns pool.
 type UserRepository struct {
 	getter func(context.Context) DBTX
 }

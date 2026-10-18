@@ -23,6 +23,7 @@ func New(
 	users domain.UserUseCase,
 	rooms domain.RoomUseCase,
 	schedules domain.ScheduleUseCase,
+	slots domain.SlotUseCase,
 	tokens TokenParser,
 ) *Server {
 	router := gin.New()
@@ -46,6 +47,12 @@ func New(
 		router,
 		AuthMiddleware(tokens),
 		RequireAdmin(),
+	)
+
+	slotHandler := handler.NewSlotHandler(slots)
+	slotHandler.RegisterRoutes(
+		router,
+		AuthMiddleware(tokens),
 	)
 
 	return &Server{
