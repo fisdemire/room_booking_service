@@ -11,9 +11,12 @@ import (
 	"time"
 
 	"github.com/fisdemire/room-booking/internal/config"
+	"github.com/fisdemire/room-booking/internal/hash"
+	jwtservice "github.com/fisdemire/room-booking/internal/jwt"
 	"github.com/fisdemire/room-booking/internal/repository"
 	"github.com/fisdemire/room-booking/internal/repository/postgres"
 	"github.com/fisdemire/room-booking/internal/server"
+	"github.com/fisdemire/room-booking/internal/usecase"
 )
 
 type App struct {
@@ -35,11 +38,30 @@ func New(
 		return nil, fmt.Errorf("initialize database: %w", err)
 	}
 
+	tokenGenerator, err := jwtservice.NewService(cfg.JWTSecret, cfg.JWTTTL)
+	if err != nil {
+		repositories.Close()
+		return nil, fmt.Errorf("initialize JWT service: %w", err)
+	}
+
+	passwordHasher, err := hash.NewBcryptHasher(0)
+	if err != nil {
+		repositories.Close()
+		return nil, fmt.Errorf("initialize password hasher: %w", err)
+	}
+
+	userUseCase := usecase.NewUserUseCase(
+		repositories.User(),
+		tokenGenerator,
+		passwordHasher,
+	)
+
 	srv := server.New(
 		cfg.HTTP.GetAddr(),
 		cfg.HTTP.ReadTimeout,
 		cfg.HTTP.WriteTimeout,
 		cfg.HTTP.IdleTimeout,
+		userUseCase,
 	)
 
 	return &App{

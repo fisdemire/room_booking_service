@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/fisdemire/room-booking/internal/domain"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -95,13 +96,32 @@ func (m *TxManager) Querier(ctx context.Context) DBTX {
 }
 
 type Repositories struct {
-	pool *pgxpool.Pool
+	pool   *pgxpool.Pool
+	getter func(context.Context) DBTX
 }
 
+// New creates repositories that use the pool directly.
 func New(pool *pgxpool.Pool) *Repositories {
-	return &Repositories{
-		pool: pool,
+	return NewWithGetter(pool, nil)
+}
+
+// NewWithGetter creates repositories that can use transactions stored in ctx.
+func NewWithGetter(
+	pool *pgxpool.Pool,
+	getter func(context.Context) DBTX,
+) *Repositories {
+	if getter == nil {
+		getter = func(context.Context) DBTX { return pool }
 	}
+
+	return &Repositories{
+		pool:   pool,
+		getter: getter,
+	}
+}
+
+func (r *Repositories) User() domain.UserRepository {
+	return NewUserRepository(r.pool, r.getter)
 }
 
 func (r *Repositories) Close() {

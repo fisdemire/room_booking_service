@@ -72,7 +72,7 @@ func (u *userUseCase) Register(
 	if userRole == "" {
 		userRole = domain.RoleUser
 	}
-	if userRole != domain.RoleUser {
+	if userRole != domain.RoleUser && userRole != domain.RoleAdmin {
 		return nil, domain.ErrInvalidRole
 	}
 
@@ -164,7 +164,15 @@ func (u *userUseCase) DummyLogin(
 		return "", domain.ErrInvalidRole
 	}
 
-	userID := "dummy-" + string(userRole)
+	var userID string
+	switch userRole {
+	case domain.RoleUser:
+		userID = domain.DummyUserID
+	case domain.RoleAdmin:
+		userID = domain.DummyAdminID
+	default:
+		return "", domain.ErrInvalidRole
+	}
 
 	token, err := u.tokens.Generate(ctx, userID, userRole)
 	if err != nil {

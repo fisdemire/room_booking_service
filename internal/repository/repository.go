@@ -26,10 +26,10 @@ type PostgresConfig struct {
 	Port            string        `env:"POSTGRES_PORT" env-default:"5432"`
 	Username        string        `env:"POSTGRES_USER" env-default:"room_booking"`
 	Password        string        `env:"POSTGRES_PASSWORD" env-default:"local_dev_password"`
-	Database        string        `env:"POSTGRES_DBNAME" env-default:"room_booking"`
+	Database        string        `env:"POSTGRES_DB" env-default:"room_booking"`
 	SSLMode         string        `env:"POSTGRES_SSLMODE" env-default:"disable"`
 	MigrationsPath  string        `env:"POSTGRES_MIGRATIONS_PATH" env-default:"./migrations"`
-	MaxConns        int32         `env:"POSTGRES_MAX_CONNS" env-default:"25"`
+	MaxConns        int32         `env:"POSTGRES_POOL_MAX_CONNS" env-default:"25"`
 	MinConns        int32         `env:"POSTGRES_MIN_CONNS" env-default:"5"`
 	ConnMaxLifetime time.Duration `env:"POSTGRES_CONN_MAX_LIFETIME" env-default:"1h"`
 	ConnMaxIdleTime time.Duration `env:"POSTGRES_CONN_MAX_IDLE_TIME" env-default:"30m"`
@@ -229,7 +229,7 @@ func NewRepositoryWithTxManager(
 	}
 
 	txManager := postgres.NewTxManager(pool)
-	repositories := postgres.New(pool)
+	repositories := postgres.NewWithGetter(pool, txManager.Querier)
 
 	return repositories, txManager, nil
 }

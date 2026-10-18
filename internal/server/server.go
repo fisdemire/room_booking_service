@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/fisdemire/room-booking/internal/domain"
+	"github.com/fisdemire/room-booking/internal/server/handler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +20,7 @@ func New(
 	readTimeout time.Duration,
 	writeTimeout time.Duration,
 	idleTimeout time.Duration,
+	users domain.UserUseCase,
 ) *Server {
 	router := gin.New()
 	router.Use(gin.Recovery())
@@ -27,6 +30,8 @@ func New(
 			"status": "ok",
 		})
 	})
+
+	handler.RegisterRoutes(router, users)
 
 	return &Server{
 		server: &http.Server{

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/fisdemire/room-booking/internal/domain"
+	"github.com/fisdemire/room-booking/internal/server/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,8 +28,10 @@ func AuthMiddleware(parser TokenParser) gin.HandlerFunc {
 
 		if len(header) != 2 ||
 			!strings.EqualFold(header[0], "Bearer") {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "missing or invalid authorization header",
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{
+				Error: models.ErrorDetail{
+					Code: "UNAUTHORIZED", Message: "missing or invalid authorization header",
+				},
 			})
 			return
 		}
@@ -38,8 +41,10 @@ func AuthMiddleware(parser TokenParser) gin.HandlerFunc {
 			header[1],
 		)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid or expired token",
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{
+				Error: models.ErrorDetail{
+					Code: "UNAUTHORIZED", Message: "invalid or expired token",
+				},
 			})
 			return
 		}
@@ -55,8 +60,10 @@ func RequireAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, ok := c.Get(userRoleKey)
 		if !ok || role != domain.RoleAdmin {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"error": "admin access required",
+			c.AbortWithStatusJSON(http.StatusForbidden, models.ErrorResponse{
+				Error: models.ErrorDetail{
+					Code: "FORBIDDEN", Message: "admin access required",
+				},
 			})
 			return
 		}

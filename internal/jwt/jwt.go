@@ -24,7 +24,8 @@ type Service struct {
 }
 
 type claims struct {
-	Role domain.Role `json:"role"`
+	UserID string      `json:"user_id"`
+	Role   domain.Role `json:"role"`
 	jwtlib.RegisteredClaims
 }
 
@@ -70,7 +71,8 @@ func (s *Service) Generate(
 	now := time.Now().UTC()
 
 	tokenClaims := claims{
-		Role: role,
+		UserID: userID,
+		Role:   role,
 		RegisteredClaims: jwtlib.RegisteredClaims{
 			Issuer:    issuer,
 			Subject:   userID,
@@ -127,12 +129,14 @@ func (s *Service) Parse(
 	}
 
 	if !token.Valid ||
+		tokenClaims.UserID == "" ||
 		tokenClaims.Subject == "" ||
+		tokenClaims.Subject != tokenClaims.UserID ||
 		tokenClaims.ExpiresAt == nil ||
 		(tokenClaims.Role != domain.RoleUser &&
 			tokenClaims.Role != domain.RoleAdmin) {
 		return "", "", ErrInvalidToken
 	}
 
-	return tokenClaims.Subject, tokenClaims.Role, nil
+	return tokenClaims.UserID, tokenClaims.Role, nil
 }
