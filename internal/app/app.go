@@ -60,6 +60,20 @@ func New(
 		repositories.Room(),
 	)
 
+	scheduleRepo := repositories.Schedule()
+	slotRepo := repositories.Slot()
+
+	slotGenerator := usecase.NewSlotGenerator(
+		slotRepo,
+		scheduleRepo,
+	)
+
+	scheduleUseCase := usecase.NewScheduleUseCase(
+		scheduleRepo,
+		slotGenerator,
+		txManager,
+	)
+
 	srv := server.New(
 		cfg.HTTP.GetAddr(),
 		cfg.HTTP.ReadTimeout,
@@ -67,6 +81,7 @@ func New(
 		cfg.HTTP.IdleTimeout,
 		userUseCase,
 		roomUseCase,
+		scheduleUseCase,
 		tokenGenerator,
 	)
 

@@ -22,21 +22,27 @@ func New(
 	idleTimeout time.Duration,
 	users domain.UserUseCase,
 	rooms domain.RoomUseCase,
+	schedules domain.ScheduleUseCase,
 	tokens TokenParser,
 ) *Server {
 	router := gin.New()
 	router.Use(gin.Recovery())
 
 	router.GET("/_info", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
-		})
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 
 	handler.RegisterRoutes(router, users)
 
 	roomHandler := handler.NewRoomHandler(rooms)
 	roomHandler.RegisterRoutes(
+		router,
+		AuthMiddleware(tokens),
+		RequireAdmin(),
+	)
+
+	scheduleHandler := handler.NewScheduleHandler(schedules)
+	scheduleHandler.RegisterRoutes(
 		router,
 		AuthMiddleware(tokens),
 		RequireAdmin(),

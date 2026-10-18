@@ -62,3 +62,21 @@ type ErrorDetail struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
+
+type CreateScheduleRequest struct {
+	DaysOfWeek []int  `json:"daysOfWeek" binding:"required,min=1,dive,min=1,max=7"`
+	StartTime  string `json:"startTime" binding:"required"`
+	EndTime    string `json:"endTime" binding:"required"`
+}
+
+type ScheduleResponse struct {
+	ID         string `json:"id"`
+	RoomID     string `json:"roomId"`
+	DaysOfWeek []int  `json:"daysOfWeek"`
+	StartTime  string `json:"startTime"`
+	EndTime    string `json:"endTime"`
+}
+
+type CreateScheduleResponse struct {
+	Schedule ScheduleResponse `json:"schedule"`
+}

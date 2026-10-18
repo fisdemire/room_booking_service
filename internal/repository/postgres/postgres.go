@@ -135,3 +135,11 @@ func (r *Repositories) Close() {
 
 	r.pool.Close()
 }
+
+func (r *Repositories) Schedule() *ScheduleRepository {
+	return NewScheduleRepository(r.pool, r.getter)
+}
+
+func (r *Repositories) Slot() *SlotRepository {
+	return NewSlotRepository(r.pool, r.getter)
+}
