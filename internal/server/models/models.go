@@ -91,3 +91,40 @@ type SlotResponse struct {
 type ListSlotsResponse struct {
 	Slots []SlotResponse `json:"slots"`
 }
+
+type CreateBookingRequest struct {
+	SlotID               string `json:"slotId" binding:"required"`
+	CreateConferenceLink bool   `json:"createConferenceLink"`
+}
+
+type BookingResponse struct {
+	ID             string    `json:"id"`
+	SlotID         string    `json:"slotId"`
+	UserID         string    `json:"userId"`
+	Status         string    `json:"status"`
+	ConferenceLink *string   `json:"conferenceLink"`
+	CreatedAt      time.Time `json:"createdAt"`
+}
+
+type CreateBookingResponse struct {
+	Booking BookingResponse `json:"booking"`
+}
+
+type CancelBookingResponse struct {
+	Booking BookingResponse `json:"booking"`
+}
+
+type ListMyBookingsResponse struct {
+	Bookings []BookingResponse `json:"bookings"`
+}
+
+type PaginationInfo struct {
+	Page     int `json:"page"`
+	PageSize int `json:"pageSize"`
+	Total    int `json:"total"`
+}
+
+type ListBookingsResponse struct {
+	Bookings   []BookingResponse `json:"bookings"`
+	Pagination PaginationInfo    `json:"pagination"`
+}

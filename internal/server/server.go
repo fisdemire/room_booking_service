@@ -24,6 +24,7 @@ func New(
 	rooms domain.RoomUseCase,
 	schedules domain.ScheduleUseCase,
 	slots domain.SlotUseCase,
+	bookings domain.BookingUseCase,
 	tokens TokenParser,
 ) *Server {
 	router := gin.New()
@@ -53,6 +54,14 @@ func New(
 	slotHandler.RegisterRoutes(
 		router,
 		AuthMiddleware(tokens),
+	)
+
+	bookingHandler := handler.NewBookingHandler(bookings)
+	bookingHandler.RegisterRoutes(
+		router,
+		AuthMiddleware(tokens),
+		RequireUser(),
+		RequireAdmin(),
 	)
 
 	return &Server{

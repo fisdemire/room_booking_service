@@ -72,6 +72,23 @@ func RequireAdmin() gin.HandlerFunc {
 	}
 }
 
+func RequireUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		role, ok := RoleFromContext(c)
+		if !ok || role != domain.RoleUser {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"error": gin.H{
+					"code":    "FORBIDDEN",
+					"message": "user access required",
+				},
+			})
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func UserIDFromContext(c *gin.Context) (string, bool) {
 	value, ok := c.Get(userIDKey)
 	if !ok {

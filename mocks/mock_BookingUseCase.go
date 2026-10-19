@@ -23,21 +23,33 @@ func (_m *MockBookingUseCase) EXPECT() *MockBookingUseCase_Expecter {
 }
 
 // CancelBooking provides a mock function with given fields: ctx, userID, bookingID
-func (_m *MockBookingUseCase) CancelBooking(ctx context.Context, userID string, bookingID string) error {
+func (_m *MockBookingUseCase) CancelBooking(ctx context.Context, userID string, bookingID string) (*domain.Booking, error) {
 	ret := _m.Called(ctx, userID, bookingID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CancelBooking")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+	var r0 *domain.Booking
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*domain.Booking, error)); ok {
+		return rf(ctx, userID, bookingID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *domain.Booking); ok {
 		r0 = rf(ctx, userID, bookingID)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*domain.Booking)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, userID, bookingID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockBookingUseCase_CancelBooking_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CancelBooking'
@@ -60,12 +72,12 @@ func (_c *MockBookingUseCase_CancelBooking_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockBookingUseCase_CancelBooking_Call) Return(_a0 error) *MockBookingUseCase_CancelBooking_Call {
-	_c.Call.Return(_a0)
+func (_c *MockBookingUseCase_CancelBooking_Call) Return(_a0 *domain.Booking, _a1 error) *MockBookingUseCase_CancelBooking_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockBookingUseCase_CancelBooking_Call) RunAndReturn(run func(context.Context, string, string) error) *MockBookingUseCase_CancelBooking_Call {
+func (_c *MockBookingUseCase_CancelBooking_Call) RunAndReturn(run func(context.Context, string, string) (*domain.Booking, error)) *MockBookingUseCase_CancelBooking_Call {
 	_c.Call.Return(run)
 	return _c
 }

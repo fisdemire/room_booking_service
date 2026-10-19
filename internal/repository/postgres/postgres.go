@@ -141,3 +141,7 @@ func (r *Repositories) Schedule() *ScheduleRepository {
 func (r *Repositories) Slot() *SlotRepository {
 	return NewSlotRepository(r.pool, r.getter)
 }
+
+func (r *Repositories) Booking() domain.BookingRepository {
+	return NewBookingRepository(r.pool, r.getter)
+}

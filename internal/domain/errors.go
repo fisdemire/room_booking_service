@@ -30,4 +30,7 @@ var (
 
 	ErrRoomIDAndSlotIDRequired = errors.New("room ID and slot ID are required")
 	ErrSlotNotInRoom           = errors.New("slot does not belong to the specified room")
+
+	ErrSlotIDRequired    = errors.New("slot ID is required")
+	ErrBookingIDRequired = errors.New("booking ID is required")
 )

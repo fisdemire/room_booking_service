@@ -27,12 +27,24 @@ func (b *Booking) Cancel() bool {
 	}
 
 	b.Status = BookingStatusCancelled
-
 	return true
 }
 
 func (b *Booking) IsOwnedBy(userID string) bool {
 	return b.UserID == userID
+}
+
+type BookingRepository interface {
+	Create(ctx context.Context, booking *Booking) error
+	GetByID(ctx context.Context, id string) (*Booking, error)
+	Update(ctx context.Context, booking *Booking) error
+	GetFutureByUserID(
+		ctx context.Context,
+		userID string,
+		now time.Time,
+	) ([]*Booking, error)
+	GetAll(ctx context.Context, limit, offset int) ([]*Booking, error)
+	GetTotalCount(ctx context.Context) (int, error)
 }
 
 type BookingUseCase interface {
@@ -46,8 +58,20 @@ type BookingUseCase interface {
 		userID, slotID string,
 	) (*Booking, error)
 
-	CancelBooking(ctx context.Context, userID, bookingID string) error
-	GetMyBookings(ctx context.Context, userID string) ([]*Booking, error)
-	GetAllBookings(ctx context.Context, limit, offset int) ([]*Booking, error)
+	CancelBooking(
+		ctx context.Context,
+		userID, bookingID string,
+	) (*Booking, error)
+
+	GetMyBookings(
+		ctx context.Context,
+		userID string,
+	) ([]*Booking, error)
+
+	GetAllBookings(
+		ctx context.Context,
+		limit, offset int,
+	) ([]*Booking, error)
+
 	GetTotalCount(ctx context.Context) (int, error)
 }

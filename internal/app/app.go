@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/fisdemire/room-booking/internal/conference"
 	"github.com/fisdemire/room-booking/internal/config"
 	"github.com/fisdemire/room-booking/internal/hash"
 	jwtservice "github.com/fisdemire/room-booking/internal/jwt"
@@ -73,6 +74,13 @@ func New(
 		repositories.Room(),
 	)
 
+	bookingUseCase := usecase.NewBookingUseCase(
+		repositories.Booking(),
+		slotRepo,
+		txManager,
+		conference.NewMockConferenceService(0, 0),
+	)
+
 	scheduleUseCase := usecase.NewScheduleUseCase(
 		scheduleRepo,
 		slotGenerator,
@@ -88,6 +96,7 @@ func New(
 		roomUseCase,
 		scheduleUseCase,
 		slotUseCase,
+		bookingUseCase,
 		tokenGenerator,
 	)
 
