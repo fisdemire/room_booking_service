@@ -1,4 +1,4 @@
-.PHONY: up down mock help load-test
+.PHONY: up down mock help load-test swagger
 
 BASE_URL ?= http://localhost:8080
 ROOM_ID ?=
@@ -12,6 +12,9 @@ down:
 
 mock:
 	mockery
+
+swagger:
+	swag init -g cmd/api/main.go -o docs --parseInternal
 
 load-test:
 	k6 run \

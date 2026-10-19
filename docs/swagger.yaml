@@ -1,0 +1,735 @@
+basePath: /
+definitions:
+  models.BookingResponse:
+    properties:
+      conferenceLink:
+        example: https://conference.example/room/123
+        type: string
+      createdAt:
+        example: "2026-10-20T10:00:00Z"
+        type: string
+      id:
+        example: 89f8a5c2-1e4d-48b6-9d90-32e7c12d3e34
+        type: string
+      slotId:
+        example: 6f9f749e-8f28-41e7-8d8f-bc725c58ac24
+        type: string
+      status:
+        example: active
+        type: string
+      userId:
+        example: e090bb4e-9508-4c4b-bd18-03f64f56e170
+        type: string
+    type: object
+  models.CancelBookingResponse:
+    properties:
+      booking:
+        $ref: '#/definitions/models.BookingResponse'
+    type: object
+  models.CreateBookingRequest:
+    properties:
+      createConferenceLink:
+        example: false
+        type: boolean
+      slotId:
+        example: 6f9f749e-8f28-41e7-8d8f-bc725c58ac24
+        type: string
+    required:
+    - slotId
+    type: object
+  models.CreateBookingResponse:
+    properties:
+      booking:
+        $ref: '#/definitions/models.BookingResponse'
+    type: object
+  models.CreateRoomRequest:
+    properties:
+      capacity:
+        example: 8
+        type: integer
+      description:
+        example: Переговорная на 8 человек
+        type: string
+      name:
+        example: Большая переговорная
+        type: string
+    required:
+    - name
+    type: object
+  models.CreateRoomResponse:
+    properties:
+      room:
+        $ref: '#/definitions/models.RoomResponse'
+    type: object
+  models.CreateScheduleRequest:
+    properties:
+      daysOfWeek:
+        example:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        items:
+          type: integer
+        minItems: 1
+        type: array
+      endTime:
+        example: "18:00"
+        type: string
+      startTime:
+        example: "09:00"
+        type: string
+    required:
+    - daysOfWeek
+    - endTime
+    - startTime
+    type: object
+  models.CreateScheduleResponse:
+    properties:
+      schedule:
+        $ref: '#/definitions/models.ScheduleResponse'
+    type: object
+  models.DummyLoginRequest:
+    properties:
+      role:
+        enum:
+        - admin
+        - user
+        example: user
+        type: string
+    required:
+    - role
+    type: object
+  models.ErrorDetail:
+    properties:
+      code:
+        example: INVALID_REQUEST
+        type: string
+      message:
+        example: invalid request
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/models.ErrorDetail'
+    type: object
+  models.InfoResponse:
+    properties:
+      status:
+        example: ok
+        type: string
+    type: object
+  models.ListBookingsResponse:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/models.BookingResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/models.PaginationInfo'
+    type: object
+  models.ListMyBookingsResponse:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/models.BookingResponse'
+        type: array
+    type: object
+  models.ListRoomsResponse:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/models.RoomResponse'
+        type: array
+    type: object
+  models.ListSlotsResponse:
+    properties:
+      slots:
+        items:
+          $ref: '#/definitions/models.SlotResponse'
+        type: array
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: StrongPassword123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.PaginationInfo:
+    properties:
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      total:
+        example: 42
+        type: integer
+    type: object
+  models.RegisterRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: StrongPassword123
+        type: string
+      role:
+        enum:
+        - admin
+        - user
+        example: user
+        type: string
+    required:
+    - email
+    - password
+    - role
+    type: object
+  models.RegisterResponse:
+    properties:
+      user:
+        $ref: '#/definitions/models.UserResponse'
+    type: object
+  models.RoomResponse:
+    properties:
+      capacity:
+        example: 8
+        type: integer
+      createdAt:
+        example: "2026-10-20T10:00:00Z"
+        type: string
+      description:
+        example: Переговорная на 8 человек
+        type: string
+      id:
+        example: b7a3a880-62c9-47e1-99f7-6f0cc9c5e111
+        type: string
+      name:
+        example: Большая переговорная
+        type: string
+    type: object
+  models.ScheduleResponse:
+    properties:
+      daysOfWeek:
+        example:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        items:
+          type: integer
+        type: array
+      endTime:
+        example: "18:00"
+        type: string
+      id:
+        example: 2ccfc08f-cc8d-4b8c-b949-55a70a9b8511
+        type: string
+      roomId:
+        example: b7a3a880-62c9-47e1-99f7-6f0cc9c5e111
+        type: string
+      startTime:
+        example: "09:00"
+        type: string
+    type: object
+  models.SlotResponse:
+    properties:
+      end:
+        example: "2026-10-21T09:30:00Z"
+        type: string
+      id:
+        example: 6f9f749e-8f28-41e7-8d8f-bc725c58ac24
+        type: string
+      roomId:
+        example: b7a3a880-62c9-47e1-99f7-6f0cc9c5e111
+        type: string
+      start:
+        example: "2026-10-21T09:00:00Z"
+        type: string
+    type: object
+  models.TokenResponse:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  models.UserResponse:
+    properties:
+      createdAt:
+        example: "2026-10-20T10:00:00Z"
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: e090bb4e-9508-4c4b-bd18-03f64f56e170
+        type: string
+      role:
+        example: user
+        type: string
+    type: object
+info:
+  contact: {}
+  description: |-
+    REST API сервиса бронирования переговорных комнат.
+    Для защищённых методов нажми Authorize и введи Bearer <JWT-токен>.
+  title: Room Booking API
+  version: "1.0"
+paths:
+  /_info:
+    get:
+      description: Возвращает простой статус процесса API.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сервис доступен
+          schema:
+            $ref: '#/definitions/models.InfoResponse'
+      summary: Проверка состояния сервиса
+      tags:
+      - system
+  /bookings/{bookingId}/cancel:
+    post:
+      description: Отменяет своё бронирование. Пользователь не может отменить бронирование
+        другого пользователя. Требуется роль user.
+      parameters:
+      - description: UUID бронирования
+        format: uuid
+        in: path
+        name: bookingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Бронирование отменено
+          schema:
+            $ref: '#/definitions/models.CancelBookingResponse'
+        "400":
+          description: Некорректный UUID бронирования
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Нет прав на отмену этого бронирования
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Бронирование не найдено
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Отменить бронирование
+      tags:
+      - bookings
+  /bookings/create:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт бронирование свободного слота от имени текущего пользователя.
+        При createConferenceLink=true дополнительно создаётся ссылка на конференцию.
+        Требуется роль user.
+      parameters:
+      - description: Параметры бронирования
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Бронирование создано
+          schema:
+            $ref: '#/definitions/models.CreateBookingResponse'
+        "400":
+          description: Некорректный запрос или слот в прошлом
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Требуется роль user
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Слот не найден
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Слот уже забронирован
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Забронировать слот
+      tags:
+      - bookings
+  /bookings/list:
+    get:
+      description: Возвращает бронирования постранично. Доступно только пользователю
+        с ролью admin.
+      parameters:
+      - default: 1
+        description: Номер страницы
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 20
+        description: Количество записей на странице (1–100)
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Страница бронирований
+          schema:
+            $ref: '#/definitions/models.ListBookingsResponse'
+        "400":
+          description: Некорректные параметры пагинации
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Требуется роль admin
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить все бронирования
+      tags:
+      - bookings
+  /bookings/my:
+    get:
+      description: Возвращает будущие бронирования текущего пользователя. Требуется
+        роль user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список моих бронирований
+          schema:
+            $ref: '#/definitions/models.ListMyBookingsResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Требуется роль user
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить свои бронирования
+      tags:
+      - bookings
+  /dummyLogin:
+    post:
+      consumes:
+      - application/json
+      description: Выдаёт токен для заранее предусмотренного тестового пользователя.
+        Предназначен для локальной разработки и тестирования.
+      parameters:
+      - description: Роль тестового пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DummyLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT-токен
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+        "400":
+          description: Некорректное тело запроса или роль
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Получить тестовый JWT
+      tags:
+      - auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет email и пароль и возвращает JWT-токен.
+      parameters:
+      - description: Учётные данные
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT-токен
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Неверный email или пароль
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Войти в систему
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт учётную запись. Роль должна быть user или admin; регистрация
+        с ролью admin предусмотрена текущей реализацией API.
+      parameters:
+      - description: Данные нового пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Пользователь создан
+          schema:
+            $ref: '#/definitions/models.RegisterResponse'
+        "400":
+          description: Некорректное тело запроса или данные пользователя
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Зарегистрировать пользователя
+      tags:
+      - auth
+  /rooms/{roomId}/schedule/create:
+    post:
+      consumes:
+      - application/json
+      description: Настраивает еженедельное расписание комнаты и создаёт слоты согласно
+        расписанию. Для комнаты допускается одно расписание. Требуется роль admin.
+      parameters:
+      - description: UUID комнаты
+        format: uuid
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: Расписание комнаты
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Расписание создано
+          schema:
+            $ref: '#/definitions/models.CreateScheduleResponse'
+        "400":
+          description: Некорректный UUID, дни или временной диапазон
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Требуется роль admin
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Комната не найдена
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Расписание для комнаты уже существует
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать расписание комнаты
+      tags:
+      - schedules
+  /rooms/{roomId}/slots/list:
+    get:
+      description: Возвращает незанятые слоты указанной комнаты на конкретную дату.
+        Требуется JWT.
+      parameters:
+      - description: UUID комнаты
+        format: uuid
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: Дата в формате YYYY-MM-DD
+        example: "2026-10-21"
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список свободных слотов
+          schema:
+            $ref: '#/definitions/models.ListSlotsResponse'
+        "400":
+          description: Некорректный UUID комнаты или дата
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Комната не найдена
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить свободные слоты комнаты на дату
+      tags:
+      - slots
+  /rooms/create:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт переговорную комнату. Требуется JWT пользователя с ролью
+        admin.
+      parameters:
+      - description: Данные комнаты
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Комната создана
+          schema:
+            $ref: '#/definitions/models.CreateRoomResponse'
+        "400":
+          description: Некорректные данные комнаты
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Требуется роль admin
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать комнату
+      tags:
+      - rooms
+  /rooms/list:
+    get:
+      description: Возвращает список всех переговорных комнат. Требуется JWT.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список комнат
+          schema:
+            $ref: '#/definitions/models.ListRoomsResponse'
+        "401":
+          description: Отсутствует или недействителен JWT
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить список комнат
+      tags:
+      - rooms
+securityDefinitions:
+  BearerAuth:
+    description: 'Формат заголовка: Bearer JWT-токен.'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

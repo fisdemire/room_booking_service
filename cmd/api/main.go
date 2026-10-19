@@ -1,3 +1,13 @@
+// @title Room Booking API
+// @version 1.0
+// @description REST API сервиса бронирования переговорных комнат.
+// @description Для защищённых методов нажми Authorize и введи Bearer <JWT-токен>.
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Формат заголовка: Bearer JWT-токен.
+
 package main
 
 import (

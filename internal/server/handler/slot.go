@@ -27,6 +27,20 @@ func (h *SlotHandler) RegisterRoutes(
 	group.GET("/:roomId/slots/list", h.GetAvailableSlots)
 }
 
+// GetAvailableSlots godoc
+// @Summary Получить свободные слоты комнаты на дату
+// @Description Возвращает незанятые слоты указанной комнаты на конкретную дату. Требуется JWT.
+// @Tags slots
+// @Produce json
+// @Security BearerAuth
+// @Param roomId path string true "UUID комнаты" format(uuid)
+// @Param date query string true "Дата в формате YYYY-MM-DD" example(2026-10-21)
+// @Success 200 {object} models.ListSlotsResponse "Список свободных слотов"
+// @Failure 400 {object} models.ErrorResponse "Некорректный UUID комнаты или дата"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 404 {object} models.ErrorResponse "Комната не найдена"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /rooms/{roomId}/slots/list [get]
 func (h *SlotHandler) GetAvailableSlots(c *gin.Context) {
 	roomID := c.Param("roomId")
 

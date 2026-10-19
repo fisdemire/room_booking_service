@@ -25,6 +25,17 @@ func RegisterRoutes(router gin.IRoutes, users domain.UserUseCase) {
 	router.POST("/login", h.Login)
 }
 
+// DummyLogin godoc
+// @Summary Получить тестовый JWT
+// @Description Выдаёт токен для заранее предусмотренного тестового пользователя. Предназначен для локальной разработки и тестирования.
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body models.DummyLoginRequest true "Роль тестового пользователя"
+// @Success 200 {object} models.TokenResponse "JWT-токен"
+// @Failure 400 {object} models.ErrorResponse "Некорректное тело запроса или роль"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /dummyLogin [post]
 func (h *UserHandler) DummyLogin(c *gin.Context) {
 	var req models.DummyLoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -41,6 +52,17 @@ func (h *UserHandler) DummyLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, models.TokenResponse{Token: token})
 }
 
+// Register godoc
+// @Summary Зарегистрировать пользователя
+// @Description Создаёт учётную запись. Роль должна быть user или admin; регистрация с ролью admin предусмотрена текущей реализацией API.
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body models.RegisterRequest true "Данные нового пользователя"
+// @Success 201 {object} models.RegisterResponse "Пользователь создан"
+// @Failure 400 {object} models.ErrorResponse "Некорректное тело запроса или данные пользователя"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -73,6 +95,18 @@ func (h *UserHandler) Register(c *gin.Context) {
 	})
 }
 
+// Login godoc
+// @Summary Войти в систему
+// @Description Проверяет email и пароль и возвращает JWT-токен.
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body models.LoginRequest true "Учётные данные"
+// @Success 200 {object} models.TokenResponse "JWT-токен"
+// @Failure 400 {object} models.ErrorResponse "Некорректное тело запроса"
+// @Failure 401 {object} models.ErrorResponse "Неверный email или пароль"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /login [post]
 func (h *UserHandler) Login(c *gin.Context) {
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

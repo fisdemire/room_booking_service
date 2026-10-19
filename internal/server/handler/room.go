@@ -30,6 +30,20 @@ func (h *RoomHandler) RegisterRoutes(
 	group.POST("/create", adminMiddleware, h.CreateRoom)
 }
 
+// CreateRoom godoc
+// @Summary Создать комнату
+// @Description Создаёт переговорную комнату. Требуется JWT пользователя с ролью admin.
+// @Tags rooms
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body models.CreateRoomRequest true "Данные комнаты"
+// @Success 201 {object} models.CreateRoomResponse "Комната создана"
+// @Failure 400 {object} models.ErrorResponse "Некорректные данные комнаты"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 403 {object} models.ErrorResponse "Требуется роль admin"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /rooms/create [post]
 func (h *RoomHandler) CreateRoom(c *gin.Context) {
 	var req models.CreateRoomRequest
 
@@ -75,6 +89,16 @@ func (h *RoomHandler) CreateRoom(c *gin.Context) {
 	})
 }
 
+// ListRooms godoc
+// @Summary Получить список комнат
+// @Description Возвращает список всех переговорных комнат. Требуется JWT.
+// @Tags rooms
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} models.ListRoomsResponse "Список комнат"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /rooms/list [get]
 func (h *RoomHandler) ListRooms(c *gin.Context) {
 	rooms, err := h.rooms.GetAllRooms(c.Request.Context())
 	if err != nil {

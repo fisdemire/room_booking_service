@@ -33,6 +33,23 @@ func (h *ScheduleHandler) RegisterRoutes(
 	)
 }
 
+// CreateSchedule godoc
+// @Summary Создать расписание комнаты
+// @Description Настраивает еженедельное расписание комнаты и создаёт слоты согласно расписанию. Для комнаты допускается одно расписание. Требуется роль admin.
+// @Tags schedules
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param roomId path string true "UUID комнаты" format(uuid)
+// @Param request body models.CreateScheduleRequest true "Расписание комнаты"
+// @Success 201 {object} models.CreateScheduleResponse "Расписание создано"
+// @Failure 400 {object} models.ErrorResponse "Некорректный UUID, дни или временной диапазон"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 403 {object} models.ErrorResponse "Требуется роль admin"
+// @Failure 404 {object} models.ErrorResponse "Комната не найдена"
+// @Failure 409 {object} models.ErrorResponse "Расписание для комнаты уже существует"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /rooms/{roomId}/schedule/create [post]
 func (h *ScheduleHandler) CreateSchedule(c *gin.Context) {
 	roomID := c.Param("roomId")
 

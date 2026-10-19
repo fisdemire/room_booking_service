@@ -6,9 +6,13 @@ import (
 	"net/http"
 	"time"
 
+	_ "github.com/fisdemire/room-booking/docs"
 	"github.com/fisdemire/room-booking/internal/domain"
 	"github.com/fisdemire/room-booking/internal/server/handler"
+	"github.com/fisdemire/room-booking/internal/server/models"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -30,9 +34,8 @@ func New(
 	router := gin.New()
 	router.Use(gin.Recovery())
 
-	router.GET("/_info", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	})
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/_info", Info)
 
 	handler.RegisterRoutes(router, users)
 
@@ -91,4 +94,15 @@ func (s *Server) Shutdown(ctx context.Context) error {
 
 func (s *Server) Close() error {
 	return s.server.Close()
+}
+
+// Info godoc
+// @Summary Проверка состояния сервиса
+// @Description Возвращает простой статус процесса API.
+// @Tags system
+// @Produce json
+// @Success 200 {object} models.InfoResponse "Сервис доступен"
+// @Router /_info [get]
+func Info(c *gin.Context) {
+	c.JSON(http.StatusOK, models.InfoResponse{Status: "ok"})
 }

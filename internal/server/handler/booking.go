@@ -33,6 +33,22 @@ func (h *BookingHandler) RegisterRoutes(
 	group.POST("/:bookingId/cancel", userMiddleware, h.CancelBooking)
 }
 
+// CreateBooking godoc
+// @Summary Забронировать слот
+// @Description Создаёт бронирование свободного слота от имени текущего пользователя. При createConferenceLink=true дополнительно создаётся ссылка на конференцию. Требуется роль user.
+// @Tags bookings
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body models.CreateBookingRequest true "Параметры бронирования"
+// @Success 201 {object} models.CreateBookingResponse "Бронирование создано"
+// @Failure 400 {object} models.ErrorResponse "Некорректный запрос или слот в прошлом"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 403 {object} models.ErrorResponse "Требуется роль user"
+// @Failure 404 {object} models.ErrorResponse "Слот не найден"
+// @Failure 409 {object} models.ErrorResponse "Слот уже забронирован"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /bookings/create [post]
 func (h *BookingHandler) CreateBooking(c *gin.Context) {
 	userID := c.GetString("auth_user_id")
 	if userID == "" {
@@ -98,6 +114,17 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 	})
 }
 
+// GetMyBookings godoc
+// @Summary Получить свои бронирования
+// @Description Возвращает будущие бронирования текущего пользователя. Требуется роль user.
+// @Tags bookings
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} models.ListMyBookingsResponse "Список моих бронирований"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 403 {object} models.ErrorResponse "Требуется роль user"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /bookings/my [get]
 func (h *BookingHandler) GetMyBookings(c *gin.Context) {
 	userID := c.GetString("auth_user_id")
 	if userID == "" {
@@ -123,6 +150,20 @@ func (h *BookingHandler) GetMyBookings(c *gin.Context) {
 	})
 }
 
+// GetAllBookings godoc
+// @Summary Получить все бронирования
+// @Description Возвращает бронирования постранично. Доступно только пользователю с ролью admin.
+// @Tags bookings
+// @Produce json
+// @Security BearerAuth
+// @Param page query int false "Номер страницы" minimum(1) default(1)
+// @Param pageSize query int false "Количество записей на странице (1–100)" minimum(1) maximum(100) default(20)
+// @Success 200 {object} models.ListBookingsResponse "Страница бронирований"
+// @Failure 400 {object} models.ErrorResponse "Некорректные параметры пагинации"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 403 {object} models.ErrorResponse "Требуется роль admin"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /bookings/list [get]
 func (h *BookingHandler) GetAllBookings(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil || page < 1 {
@@ -167,6 +208,20 @@ func (h *BookingHandler) GetAllBookings(c *gin.Context) {
 	})
 }
 
+// CancelBooking godoc
+// @Summary Отменить бронирование
+// @Description Отменяет своё бронирование. Пользователь не может отменить бронирование другого пользователя. Требуется роль user.
+// @Tags bookings
+// @Produce json
+// @Security BearerAuth
+// @Param bookingId path string true "UUID бронирования" format(uuid)
+// @Success 200 {object} models.CancelBookingResponse "Бронирование отменено"
+// @Failure 400 {object} models.ErrorResponse "Некорректный UUID бронирования"
+// @Failure 401 {object} models.ErrorResponse "Отсутствует или недействителен JWT"
+// @Failure 403 {object} models.ErrorResponse "Нет прав на отмену этого бронирования"
+// @Failure 404 {object} models.ErrorResponse "Бронирование не найдено"
+// @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка"
+// @Router /bookings/{bookingId}/cancel [post]
 func (h *BookingHandler) CancelBooking(c *gin.Context) {
 	userID := c.GetString("auth_user_id")
 	if userID == "" {
