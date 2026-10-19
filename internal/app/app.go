@@ -18,6 +18,7 @@ import (
 	"github.com/fisdemire/room-booking/internal/repository/postgres"
 	"github.com/fisdemire/room-booking/internal/server"
 	"github.com/fisdemire/room-booking/internal/usecase"
+	"github.com/fisdemire/room-booking/internal/worker"
 )
 
 type App struct {
@@ -26,6 +27,7 @@ type App struct {
 	server          *server.Server
 	logger          *slog.Logger
 	shutdownTimeout time.Duration
+	slotWorker      *worker.SlotWorker
 }
 
 func New(
@@ -87,6 +89,13 @@ func New(
 		txManager,
 	)
 
+	slotWorker := worker.NewSlotWorker(
+		slotGenerator,
+		24*time.Hour,
+		7,
+		log,
+	)
+
 	srv := server.New(
 		cfg.HTTP.GetAddr(),
 		cfg.HTTP.ReadTimeout,
@@ -106,6 +115,7 @@ func New(
 		txManager:       txManager,
 		logger:          log,
 		shutdownTimeout: cfg.HTTP.ShutdownTimeout,
+		slotWorker:      slotWorker,
 	}, nil
 }
 
@@ -116,6 +126,10 @@ func (a *App) Run(ctx context.Context) error {
 		syscall.SIGTERM,
 	)
 	defer stop()
+
+	if a.slotWorker != nil {
+		go a.slotWorker.Start(ctx)
+	}
 
 	serverErr := make(chan error, 1)
 
