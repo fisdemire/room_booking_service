@@ -1,4 +1,4 @@
-.PHONY: up down mock help load-test swagger
+.PHONY: up down mock help load-test swagger e2e-test
 
 BASE_URL ?= http://localhost:8080
 ROOM_ID ?=
@@ -26,3 +26,6 @@ load-test:
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-12s %s\n", $$1, $$2}'
+
+e2e-test:
+	BASE_URL=$(BASE_URL) go test -v ./test/e2e/...
