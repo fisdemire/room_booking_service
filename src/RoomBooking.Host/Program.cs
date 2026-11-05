@@ -1,9 +1,11 @@
 using RoomBooking.Modules.Identity;
 using RoomBooking.SharedKernel.Modules;
+using RoomBooking.Modules.Rooms;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddIdentityModule(builder.Configuration);
+builder.Services.AddRoomsModule(builder.Configuration);
 
 var app = builder.Build();
 

@@ -5,4 +5,8 @@
   <ItemGroup>
     <ProjectReference Include="..\RoomBooking.SharedKernel\RoomBooking.SharedKernel.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EFCore.NamingConventions" Version="9.*" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.*" />
+  </ItemGroup>
 </Project>
