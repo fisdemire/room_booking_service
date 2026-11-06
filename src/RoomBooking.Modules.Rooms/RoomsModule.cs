@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RoomBooking.Modules.Rooms.Persistence;
 using RoomBooking.SharedKernel.Modules;
+using Microsoft.AspNetCore.Routing;
+using RoomBooking.Modules.Rooms.Endpoints;
 
 namespace RoomBooking.Modules.Rooms;
 
@@ -17,5 +19,11 @@ public static class RoomsModule
 
         services.AddSingleton<IModuleInitializer, RoomsInitializer>();
         return services;
+    }
+
+    public static IEndpointRouteBuilder MapRoomsEndpoints(this IEndpointRouteBuilder app)
+    {
+        RoomsEndpoints.Map(app);
+        return app;
     }
 }

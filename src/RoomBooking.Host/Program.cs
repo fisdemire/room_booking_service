@@ -17,6 +17,7 @@ app.UseAuthorization();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapIdentityEndpoints();
+app.MapRoomsEndpoints();
 
 app.Run();
 
