@@ -5,6 +5,7 @@ using RoomBooking.Modules.Rooms.Persistence;
 using RoomBooking.SharedKernel.Modules;
 using Microsoft.AspNetCore.Routing;
 using RoomBooking.Modules.Rooms.Endpoints;
+using RoomBooking.Modules.Rooms.Slots;
 
 namespace RoomBooking.Modules.Rooms;
 
@@ -18,6 +19,7 @@ public static class RoomsModule
             .UseSnakeCaseNamingConvention());
 
         services.AddSingleton<IModuleInitializer, RoomsInitializer>();
+        services.AddScoped<IRoomsModule, RoomsModuleApi>();
         return services;
     }
 

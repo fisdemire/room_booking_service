@@ -67,6 +67,16 @@ internal static class RoomsEndpoints
                 r.Id, r.DayOfWeek, FormatMinute(r.StartMinute), FormatMinute(r.EndMinute))));
         }).RequireAuthorization(Policies.AdminOnly);
 
+        g.MapGet("/{id:guid}/slots", async (
+            Guid id,
+            DateOnly date,
+            IRoomsModule rooms,
+            CancellationToken ct) =>
+            await rooms.ExistsAsync(id, ct)
+                ? Results.Ok(await rooms.GetSlotsAsync(id, date, date, ct))
+                : Results.NotFound()
+        );
+
         g.MapPost("/{id:guid}/schedule", async (Guid id, AddScheduleRuleRequest req, RoomsDb db, CancellationToken ct) =>
         {
             if (!TryParseMinute(req.StartTime, isEnd: false, out var start) ||
